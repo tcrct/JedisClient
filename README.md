@@ -103,5 +103,9 @@ jedis封装工具类组件，统一使用方式
  
  }
  ```
- 
+ 如果在JedisClient里需要设置多个redis实例对象时，可以创建多个RedisPlugin类，但appId,appSecret要保证唯一，然后在使用时只需要
+ ```
+RedisFactory.getClient(appId).save(...)
+```
+即可使用与appId对应的redis实例对象，存在JedisClient里的实例对象，不区分是单机版还是集群版的Redis。
 
