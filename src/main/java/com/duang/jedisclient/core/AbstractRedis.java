@@ -18,35 +18,44 @@ public abstract class AbstractRedis implements IJedisClient {
     protected JedisPool jedisPool;
     protected JedisSentinelPool jedisSentinelPool;
     protected JedisCluster jedisCluster;
+    protected RedisConfig redisConfig;
     protected ISerializer serializer;
-    protected RedisConfig.RedisType redisType;
 
     @Override
     public Jedis getResource() {
-        if (null != jedisPool && RedisConfig.RedisType.STANDALONE.equals(redisType)) {
+        if (null != jedisPool && RedisConfig.RedisType.STANDALONE.equals(redisConfig.getRedisType())) {
             return jedisPool.getResource();
         }
-        if (null != jedisSentinelPool && RedisConfig.RedisType.SENTINEL.equals(redisType)) {
+        if (null != jedisSentinelPool && RedisConfig.RedisType.SENTINEL.equals(redisConfig.getRedisType())) {
             return jedisSentinelPool.getResource();
         }
         return null;
     }
 
-    public AbstractRedis(JedisPool jedisPool, ISerializer serializer, RedisConfig.RedisType redisType){
+    public JedisCluster getClusterResource() {
+        return jedisCluster;
+    }
+
+    public RedisConfig getRedisConfig() {
+        return redisConfig;
+    }
+
+    public AbstractRedis(JedisPool jedisPool, RedisConfig redisConfig){
         this.jedisPool = jedisPool;
-        this.redisType = redisType;
-        this.serializer = serializer;
+        this.redisConfig = redisConfig;
+        this.serializer = redisConfig.getSerializer();
     }
 
-    public AbstractRedis(JedisSentinelPool jedisSentinelPool, ISerializer serializer, RedisConfig.RedisType redisType){
+    public AbstractRedis(JedisSentinelPool jedisSentinelPool, RedisConfig redisConfig){
         this.jedisSentinelPool = jedisSentinelPool;
-        this.redisType = redisType;
-        this.serializer = serializer;
+        this.redisConfig = redisConfig;
+        this.serializer = redisConfig.getSerializer();
     }
 
-    public AbstractRedis(JedisCluster jedisCluster, ISerializer serializer){
+    public AbstractRedis(JedisCluster jedisCluster,  RedisConfig redisConfig){
         this.jedisCluster = jedisCluster;
-        this.serializer = serializer;
+        this.redisConfig = redisConfig;
+        this.serializer = redisConfig.getSerializer();
     }
     /**
      * 序列化key

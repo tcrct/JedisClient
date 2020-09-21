@@ -20,6 +20,12 @@ package com.duang.jedisclient.serializer;
  * ISerializer.
  */
 public interface ISerializer {
+
+    /**
+     *  序列化实例对象名称
+     * @return
+     */
+    String getName();
 	
     byte[] serializerKey(String key);
     byte[] serializerField(String key);

@@ -1,10 +1,10 @@
 package com.duang.jedisclient.plugin;
 
+import com.duang.jedisclient.common.RedisConfig;
 import com.duang.jedisclient.core.IJedisClient;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisCluster;
 
-import javax.xml.bind.annotation.XmlType;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -17,6 +17,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class RedisFactory {
 
+    private static Map<String, RedisConfig.RedisType> jedisClientTypeMap = new ConcurrentHashMap<String,RedisConfig.RedisType>();
     private static Map<String, IJedisClient> jedisClientMap = new ConcurrentHashMap<String,IJedisClient>();
     private static String DEFAULT_APPKEY;
     /***/
@@ -27,18 +28,30 @@ public class RedisFactory {
     private RedisFactory() {
     }
 
-    public static IJedisClient getClient() {
+    private static String getDefaultAppkey() {
         if (null == DEFAULT_APPKEY) {
             DEFAULT_APPKEY = jedisClientMap.keySet().iterator().next();
         }
-        return jedisClientMap.get(DEFAULT_APPKEY);
+        return DEFAULT_APPKEY;
+    }
+
+    public static IJedisClient getClient() {
+        return getClient(getDefaultAppkey());
     }
 
     public static IJedisClient getClient(String appId) {
         return jedisClientMap.get(appId);
     }
 
-    protected static void setClient(String appId, IJedisClient jedisClient) {
-        RedisFactory.jedisClientMap.put(appId, jedisClient);
+    public static RedisConfig.RedisType getClientType() {
+        return getClientType(getDefaultAppkey());
+    }
+    public static RedisConfig.RedisType getClientType(String appId) {
+        return jedisClientTypeMap.get(appId);
+    }
+
+    protected static void setClient(IJedisClient jedisClient, RedisConfig redisConfig) {
+        RedisFactory.jedisClientMap.put(redisConfig.getAppId(), jedisClient);
+        RedisFactory.jedisClientTypeMap.put(redisConfig.getAppId(), redisConfig.getRedisType());
     }
 }

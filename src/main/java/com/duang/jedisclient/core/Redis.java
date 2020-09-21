@@ -21,12 +21,12 @@ public class Redis extends AbstractRedis  {
 
     private static Logger LOGGER = LoggerFactory.getLogger(RedisCluster.class);
 
-    public Redis(JedisPool jedisPool, ISerializer serializer, RedisConfig.RedisType redisType) {
-        super(jedisPool, serializer, redisType);
+    public Redis(JedisPool jedisPool,RedisConfig redisConfig) {
+        super(jedisPool, redisConfig);
     }
 
-    public Redis(JedisSentinelPool jedisSentinelPool, ISerializer serializer, RedisConfig.RedisType redisType) {
-        super(jedisSentinelPool, serializer, redisType);
+    public Redis(JedisSentinelPool jedisSentinelPool, RedisConfig redisConfig) {
+        super(jedisSentinelPool,redisConfig);
     }
 
     /**
@@ -46,10 +46,10 @@ public class Redis extends AbstractRedis  {
         try {
             jedis = RedisFactory.THREAD_LOCAL_JEDIS.get();
             if (null == jedis) {
-                // 标记为不是在threadLoca里取出的
-                isNotThreadLocalObj = true ;
                 jedis = getResource();
                 RedisFactory.THREAD_LOCAL_JEDIS.set(jedis);
+                // 标记为不是在threadLoca里取出的
+                isNotThreadLocalObj = true ;
             }
             result = (T) action.execute(jedis);
         } catch (Exception e) {
@@ -59,6 +59,7 @@ public class Redis extends AbstractRedis  {
             // 不是在threadLoca里取出的，则需要立即关闭jedis
             if (null != jedis && isNotThreadLocalObj) {
                 jedis.close();
+                RedisFactory.THREAD_LOCAL_JEDIS.remove();
             }
         }
         return result;

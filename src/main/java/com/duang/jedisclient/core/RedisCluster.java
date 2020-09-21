@@ -3,6 +3,8 @@ package com.duang.jedisclient.core;
 import cn.hutool.core.thread.ThreadUtil;
 import com.duang.jedisclient.common.CacheKeyModel;
 import com.duang.jedisclient.common.KeyValueParam;
+import com.duang.jedisclient.common.RedisConfig;
+import com.duang.jedisclient.plugin.RedisFactory;
 import com.duang.jedisclient.serializer.ISerializer;
 import com.duang.jedisclient.utils.RedisUtil;
 import org.slf4j.Logger;
@@ -27,8 +29,8 @@ public class RedisCluster extends AbstractRedis {
 
     private static Logger LOGGER = LoggerFactory.getLogger(RedisCluster.class);
 
-    public RedisCluster(JedisCluster jedisCluster, ISerializer serializer) {
-        super(jedisCluster, serializer);
+    public RedisCluster(JedisCluster jedisCluster, RedisConfig redisConfig) {
+        super(jedisCluster, redisConfig);
     }
 
     /**
@@ -40,6 +42,7 @@ public class RedisCluster extends AbstractRedis {
     public <T> T call(JedisClusterAction action) {
         T result = null;
         try {
+            // 因为jedisCluster是同一个对象，不需要自行再封装共用jedisCluster
             result = (T) action.execute(jedisCluster);
         } catch (Exception e) {
             e.printStackTrace();

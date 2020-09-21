@@ -2,6 +2,9 @@ package com.duang.jedisclient.core;
 
 import com.duang.jedisclient.common.CacheKeyModel;
 import com.duang.jedisclient.common.KeyValueParam;
+import com.duang.jedisclient.common.RedisConfig;
+import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisCluster;
 import redis.clients.jedis.JedisPubSub;
 
 import java.util.List;
@@ -13,9 +16,14 @@ import java.util.Set;
  */
 public interface IJedisClient {
 
+    Jedis getResource();
+    JedisCluster getClusterResource();
+    RedisConfig getRedisConfig();
+
+    /*********************************************************  Redis Api *************************************************************/
+
     <T> T get(final CacheKeyModel model, final Class<T> type);
     String type(final CacheKeyModel model);
-    redis.clients.jedis.Jedis getResource();
     Set<String> keys(final String pattern);
     Boolean set(final CacheKeyModel model, final Object value);
     Boolean exists(final CacheKeyModel model);

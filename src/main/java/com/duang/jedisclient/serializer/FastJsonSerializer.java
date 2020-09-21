@@ -15,11 +15,19 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 /**
- * FstSerializer.
+ * FastSerializer.
+ * @author Laotang
+ * @since 1.0
+ * @date 2020-09-15
  */
 public class FastJsonSerializer implements ISerializer {
 
 	private static final FastJsonConfig fastJsonConfig = new FastJsonConfig();
+
+	@Override
+	public String getName() {
+		return FastJsonSerializer.class.getName();
+	}
 
 	public byte[] serializerKey(String key) {
 		return SafeEncoder.encode(key);
@@ -38,6 +46,9 @@ public class FastJsonSerializer implements ISerializer {
 			return new byte[0];
 		}
 		try {
+			if (value instanceof String) {
+				return String.valueOf(value).getBytes();
+			}
 			return JSON.toJSONBytesWithFastJsonConfig(
 					fastJsonConfig.getCharset(),
 					value,

@@ -77,6 +77,9 @@ public class JedisClient {
         }
 
         public Builder password(String password) {
+            if (null == password || "".equals(password.trim()) || password.trim().length() == 0) {
+                return this;
+            }
             this.password = password;
             return this;
         }

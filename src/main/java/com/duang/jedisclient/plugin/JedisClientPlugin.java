@@ -44,22 +44,24 @@ public class JedisClientPlugin implements IPlugin {
         }
         if (null == redisType) {
             redisType = RedisConfig.RedisType.STANDALONE;
+            redisConfig.setRedisType(redisType);
         }
         if (null == serializer) {
             serializer = new FastJsonSerializer();
+            redisConfig.setSerializer(serializer);
         }
         if (RedisConfig.RedisType.CLUSTER.equals(redisType)) {
             RedisClusterBuilder clusterBuilder = ClientBuilder.redisCluster(redisConfig);
-            jedisClient = new RedisCluster(clusterBuilder.build(), serializer);
+            jedisClient = new RedisCluster(clusterBuilder.build(), redisConfig);
         }
         else if (RedisConfig.RedisType.STANDALONE.equals(redisType)) {
             RedisStandaloneBuilder standaloneBuilder = ClientBuilder.redisStandalone(redisConfig);
-            jedisClient = new Redis(standaloneBuilder.build(), serializer, redisType);
+            jedisClient = new Redis(standaloneBuilder.build(), redisConfig);
         }
         else if (RedisConfig.RedisType.SENTINEL.equals(redisType)) {
             RedisSentinelBuilder sentinelBuilder = ClientBuilder.redisSentinel(redisConfig);
             JedisSentinelPool sentinelPool = sentinelBuilder.build();
-            jedisClient = new Redis(sentinelPool, serializer, redisType);
+            jedisClient = new Redis(sentinelPool, redisConfig);
             HostAndPort currentHostMaster = sentinelPool.getCurrentHostMaster();
             if (null != currentHostMaster) {
                 LOGGER.info("current master: {}", currentHostMaster.toString());
@@ -69,7 +71,7 @@ public class JedisClientPlugin implements IPlugin {
         if (null == jedisClient) {
             throw new CacheException("构建JedisClient时出错");
         }
-        RedisFactory.setClient(appId, jedisClient);
+        RedisFactory.setClient(jedisClient, redisConfig);
         RedisUtil.log(LOGGER, "链接JedisClient成功: " + RedisUtil.toJsonString(redisConfig));
     }
 

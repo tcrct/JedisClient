@@ -13,12 +13,19 @@ import java.io.IOException;
 
 /**
  * FstSerializer.
+ *
+ *  @author Laotang
+ * @since 1.0
+ * @date 2020-09-15
  */
 public class FstSerializer implements ISerializer {
 
 	private static final Logger LOG = LoggerFactory.getLogger(FstSerializer.class);
-	
-	public static final ISerializer me = new FstSerializer();
+
+	@Override
+	public String getName() {
+		return FstSerializer.class.getName();
+	}
 	
 	public byte[] serializerKey(String key) {
 		return SafeEncoder.encode(key);

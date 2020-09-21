@@ -27,10 +27,19 @@ import java.io.ObjectOutputStream;
 
 /**
  * JdkSerializer.
+ *
+ * @author Laotang
+ * @since 1.0
+ * @date 2020-09-15
  */
 public class JdkSerializer implements ISerializer {
 
 	private static final Logger LOG = LoggerFactory.getLogger(JdkSerializer.class);
+
+	@Override
+	public String getName() {
+		return JdkSerializer.class.getName();
+	}
 
 	public byte[] serializerKey(String key) {
 		return SafeEncoder.encode(key);
