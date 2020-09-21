@@ -4,7 +4,7 @@ jedis封装工具类组件，统一使用方式
 
 ####使用方法
 以springboot为例，在系统启动完成里加入以下代码：
-
+```
 @Component
 @Order(value = 1)
  public class StartupAfterRunner implements CommandLineRunner {     
@@ -19,9 +19,9 @@ jedis封装工具类组件，统一使用方式
          }
      }     
  }
- 
+ ```
  其中 RedisPlugin 代码为：
- 
+ ```
  public class RedisPlugin {
         #设置应用ID
         private String appId = "5f20d9cd209bce9e41176fbb";
@@ -52,15 +52,12 @@ jedis封装工具类组件，统一使用方式
                 jedisClient.start();
             }
  }
- 
+ ```
  ####以上代码为系统启动完成后，链接redis对象，使用示例：
  创建一个CacheKeyEnum类，定义好每一个redis缓存key的前缀，过期时间，说明等，例如：
- 
- public enum UserCacheKeyEnum implements ICacheKeyEnums {
-  
+ ```
+ public enum UserCacheKeyEnum implements ICacheKeyEnums {  
      USER_ID("duang:userid:", ICacheKeyEnums.DEFAULT_TTL, "用户ID");
- 
- 
      private String keyPrefix;
      private int  ttl;
      private String keyDesc;
@@ -68,26 +65,22 @@ jedis封装工具类组件，统一使用方式
          this.keyPrefix = keyPrefix;
          this.ttl = ttl;
          this.keyDesc = keyDesc;
-     }
- 
+     } 
      public String getKeyPrefix() {
          return keyPrefix;
-     }
- 
+     } 
      public int getKeyTTL() {
          return ttl;
-     }
- 
+     } 
      public String getKeyDesc() {
          return keyDesc;
      }
  }
- 
+ ```
  然后再创建一个CacheService层，在CacheService层里封装一下Cache的操作方法，例如创建一个UserCacheService
- 
+ ```
  @Service
- public class UserCacheService {
- 
+ public class UserCacheService { 
      private static final CacheKeyModel cacheKeyModel = new CacheKeyModel.Builder(UserCacheKeyEnum.USER).build();
  
      public void save(User user) {
@@ -109,6 +102,6 @@ jedis封装工具类组件，统一使用方式
      } 
  
  }
- 
+ ```
  
 
