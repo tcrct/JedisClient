@@ -2,9 +2,11 @@ package com.duang.jedisclient.plugin;
 
 import com.duang.jedisclient.common.RedisConfig;
 import com.duang.jedisclient.serializer.ISerializer;
+import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import redis.clients.jedis.HostAndPort;
+import redis.clients.jedis.Protocol;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -56,6 +58,22 @@ public class JedisClient {
          */
         private ISerializer serializer;
 
+        /**
+         * jedis读写超时(单位:毫秒)
+         * 默认2秒
+         */
+        private Integer readTimeout;
+        /**
+         * 节点定位重试次数:默认3次
+         */
+        private Integer maxRedirections = 3;
+
+        /**
+         * 设置配置
+         */
+        private GenericObjectPoolConfig jedisPoolConfig;
+
+
         public Builder appId(String appId) {
             this.appId = appId;
             return this;
@@ -94,8 +112,36 @@ public class JedisClient {
             return this;
         }
 
+        public Builder readTimeOut(Integer timeout) {
+            this.readTimeout = timeout;
+            return this;
+        }
+
+        public Builder maxRedirections(Integer maxRedirections) {
+            this.maxRedirections = maxRedirections;
+            return this;
+        }
+
+        public Builder poolConfig(GenericObjectPoolConfig poolConfig) {
+            this.jedisPoolConfig = poolConfig;
+            return this;
+        }
+
         public JedisClient build() {
-            return new JedisClient( new RedisConfig(appId,secret,nodeSet,password,serializer,redisType) );
+            RedisConfig redisConfig = new RedisConfig(appId,secret,nodeSet,serializer,redisType);
+            if (null != password && password.trim().length() > 0) {
+                redisConfig.setPassword(password);
+            }
+            if (null != readTimeout && readTimeout > 0) {
+                redisConfig.setReadTimeout(readTimeout);
+            }
+            if (null != maxRedirections && maxRedirections > 0) {
+                redisConfig.setMaxRedirections(maxRedirections);
+            }
+            if (null != jedisPoolConfig) {
+                redisConfig.setJedisPoolConfig(jedisPoolConfig);
+            }
+            return new JedisClient(redisConfig);
         }
     }
 }

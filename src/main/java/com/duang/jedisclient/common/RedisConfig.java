@@ -91,14 +91,14 @@ public class RedisConfig {
         this.password = password;
     }
 
-    public RedisConfig(String appId, String secret, Set<HostAndPort> nodeSet, String password, ISerializer serializer, RedisType redisType) {
+    public RedisConfig(String appId, String secret, Set<HostAndPort> nodeSet, ISerializer serializer, RedisType redisType) {
         this.appId = appId;
         this.secret = secret;
         this.nodeSet = nodeSet;
-        this.password = password;
         this.serializer = serializer;
         this.redisType = redisType;
     }
+
 
     public String getAppId() {
         return appId;
