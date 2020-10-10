@@ -1312,19 +1312,18 @@ public class RedisCluster extends AbstractRedis {
      * 将脚本 script 添加到脚本缓存中，但并不立即执行这个脚本
      *
      * @param script 脚本代码
-     * @param sampleKey 命令将在分配该密钥的哈希槽的节点中执行
+     * @param sampleKey 命令将在分配该密钥的哈希槽的节点中执行(cluster时必须要有值)
      * @param <T>
      * @return
      */
-    @Override
-    public <T> T scriptLoad(final String script, final String sampleKey) {
+    public <T> T scriptLoad(final String script, final String... sampleKey) {
         if (RedisUtil.isEmpty(sampleKey)) {
             throw new NullPointerException("redis为cluster时，sampleKey不能为空");
         }
         return call(new JedisClusterAction<T>(){
             @Override
             public T execute(JedisCluster jedisCluster) {
-                return (T)jedisCluster.scriptLoad(script, sampleKey);
+                return (T)jedisCluster.scriptLoad(script, sampleKey[0]);
             }
         });
     }

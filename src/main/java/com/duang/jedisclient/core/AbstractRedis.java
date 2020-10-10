@@ -141,14 +141,4 @@ public abstract class AbstractRedis implements IJedisClient {
         }
         return keys;
     }
-
-    @Override
-    public <T> T scriptLoad(String script){
-        return null;
-    }
-
-    @Override
-    public <T> T scriptLoad(String script, String sampleKey) {
-        return null;
-    }
 }

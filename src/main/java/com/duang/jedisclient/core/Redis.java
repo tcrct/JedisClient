@@ -1333,11 +1333,11 @@ public class Redis extends AbstractRedis  {
      * 将脚本 script 添加到脚本缓存中，但并不立即执行这个脚本
      *
      * @param script 脚本代码
+     * @param sampleKey 命令将在分配该密钥的哈希槽的节点中执行(cluster时必须要有值)
      * @param <T>
      * @return
      */
-    @Override
-    public <T> T scriptLoad(final String script) {
+    public <T> T scriptLoad(final String script, final String... sampleKey) {
         return call(new JedisAction<T>(){
             @Override
             public T execute(Jedis jedis) {

@@ -98,7 +98,6 @@ public interface IJedisClient {
     Long zcount(final CacheKeyModel model, final Double min, final Double max);
     Double zincrby(final CacheKeyModel model, final Double score, final Object member);
     Long publish(final String channel, final String message);
-    <T> T scriptLoad(final String script);
-    <T> T scriptLoad(final String script, final String sampleKey);
+    <T> T scriptLoad(final String script, final String... sampleKey);
     <T> T evalSha(final String sha, final int keyCount, final String... values);
 }
