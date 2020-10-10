@@ -1307,4 +1307,43 @@ public class RedisCluster extends AbstractRedis {
             }
         });
     }
+
+    /**
+     * 将脚本 script 添加到脚本缓存中，但并不立即执行这个脚本
+     *
+     * @param script 脚本代码
+     * @param sampleKey 命令将在分配该密钥的哈希槽的节点中执行
+     * @param <T>
+     * @return
+     */
+    @Override
+    public <T> T scriptLoad(final String script, final String sampleKey) {
+        if (RedisUtil.isEmpty(sampleKey)) {
+            throw new NullPointerException("redis为cluster时，sampleKey不能为空");
+        }
+        return call(new JedisClusterAction<T>(){
+            @Override
+            public T execute(JedisCluster jedisCluster) {
+                return (T)jedisCluster.scriptLoad(script, sampleKey);
+            }
+        });
+    }
+
+    /**
+     * 对 Lua 脚本进行求值
+     *
+     * @param sha 哈希槽的节点
+     * @param keyCount
+     * @param values 值
+     * @param <T>
+     * @return
+     */
+    public <T> T evalSha(final String sha, final int keyCount, final String... values) {
+        return call(new JedisClusterAction<T>(){
+            @Override
+            public T execute(JedisCluster jedisCluster) {
+                return (T)jedisCluster.evalsha(sha, keyCount, values);
+            }
+        });
+    }
 }

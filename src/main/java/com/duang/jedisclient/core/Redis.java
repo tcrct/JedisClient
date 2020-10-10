@@ -1328,4 +1328,39 @@ public class Redis extends AbstractRedis  {
             }
         });
     }
+
+    /**
+     * 将脚本 script 添加到脚本缓存中，但并不立即执行这个脚本
+     *
+     * @param script 脚本代码
+     * @param <T>
+     * @return
+     */
+    @Override
+    public <T> T scriptLoad(final String script) {
+        return call(new JedisAction<T>(){
+            @Override
+            public T execute(Jedis jedis) {
+                return (T)jedis.scriptLoad(script);
+            }
+        });
+    }
+
+    /**
+     * 对 Lua 脚本进行求值
+     *
+     * @param sha
+     * @param keyCount
+     * @param values
+     * @param <T>
+     * @return
+     */
+    public <T> T evalSha(final String sha, final int keyCount, final String... values) {
+        return call(new JedisAction<T>(){
+            @Override
+            public T execute(Jedis jedis) {
+                return (T)jedis.evalsha(sha, keyCount, values);
+            }
+        });
+    }
 }
