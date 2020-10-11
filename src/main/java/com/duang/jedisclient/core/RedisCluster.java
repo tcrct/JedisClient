@@ -1310,7 +1310,7 @@ public class RedisCluster extends AbstractRedis {
 
     /**
      * 将脚本 script 添加到脚本缓存中，但并不立即执行这个脚本
-     *
+     *http://c.biancheng.net/view/4554.html
      * @param script 脚本代码
      * @param sampleKey 命令将在分配该密钥的哈希槽的节点中执行(cluster时必须要有值)
      * @param <T>
