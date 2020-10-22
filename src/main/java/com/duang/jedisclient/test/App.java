@@ -39,7 +39,9 @@ public class App {
             e.printStackTrace();
         }
 
-        zadd();
+        test();
+
+//        zadd();
 
 //        hmset();
 //        hset();
@@ -51,6 +53,40 @@ public class App {
 //        decrby();
 //        mset();
     }
+
+    private static void test() {
+        CacheKeyModel cacheKeyModel = new CacheKeyModel.Builder(TestCacheKeyEnum.ORDER_MAPPING).build();
+        String field1="3b61081bdd524d519ad909127d5a91a8";
+        String field2="", field3="";
+//        for (int i=0; i<1000000; i++) {
+//            String orderId = UUID.randomUUID().toString().replace("-", "");
+//            if (i==0) {
+//                field1 = orderId;
+//            }
+//            if (i == 500000) {
+//                field2 = orderId;
+//            }
+//            if (i== 999999) {
+//                field3 = orderId;
+//            }
+//            RedisFactory.getClient().hset(cacheKeyModel, orderId, orderId);
+//        }
+
+        Long count = RedisFactory.getClient().hlen(cacheKeyModel);
+        System.out.println(count);
+
+        long startTime = System.currentTimeMillis();
+        String value = RedisFactory.getClient().hget(cacheKeyModel, String.class, field1);
+        System.out.println((System.currentTimeMillis() - startTime)+"     field1       "+ value);
+
+//        value = RedisFactory.getClient().hget(cacheKeyModel, String.class, field2);
+//        System.out.println((System.currentTimeMillis() - startTime)+"      field2      "+ value);
+//
+//        value = RedisFactory.getClient().hget(cacheKeyModel, String.class, field3);
+//        System.out.println((System.currentTimeMillis() - startTime)+"     field3       "+ value);
+
+    }
+
 
     private static void zadd() {
         RedisTestUser user = getUser();

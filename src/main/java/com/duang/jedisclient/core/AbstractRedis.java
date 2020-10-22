@@ -106,7 +106,7 @@ public abstract class AbstractRedis implements IJedisClient {
      * @return
      */
     protected <T> T deSerializeValue(byte[] bytes, Class<T> type) {
-        return serializer.deSerializerValue(bytes, type);
+        return  (String.class.equals(type)) ? (T)new String(bytes) : serializer.deSerializerValue(bytes, type);
     }
 
     protected <T> List<T> toValueList(List<byte[]> data, Class<T> type) {

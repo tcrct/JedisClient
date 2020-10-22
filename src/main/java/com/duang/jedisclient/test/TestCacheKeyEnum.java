@@ -5,7 +5,8 @@ import com.duang.jedisclient.common.ICacheKeyEnums;
 
 public enum TestCacheKeyEnum implements ICacheKeyEnums {
 
-    USER_ID("zat:mpay:userid:", ICacheKeyEnums.DEFAULT_TTL, "用户ID");
+    USER_ID("zat:mpay:userid:", ICacheKeyEnums.DEFAULT_TTL, "用户ID"),
+    ORDER_MAPPING("order:mapping", ICacheKeyEnums.DEFAULT_TTL, "用户ID");
 
 
     private String keyPrefix;
