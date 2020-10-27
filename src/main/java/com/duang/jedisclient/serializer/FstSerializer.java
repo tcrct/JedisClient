@@ -5,11 +5,13 @@ import org.nustaq.serialization.FSTObjectInput;
 import org.nustaq.serialization.FSTObjectOutput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import redis.clients.jedis.util.SafeEncoder;
+import redis.clients.jedis.Protocol;
+import redis.clients.jedis.exceptions.JedisException;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 
 /**
  * FstSerializer.
@@ -28,7 +30,11 @@ public class FstSerializer implements ISerializer {
 	}
 	
 	public byte[] serializerKey(String key) {
-		return SafeEncoder.encode(key);
+		try {
+			return key.getBytes(Protocol.CHARSET);
+		} catch (UnsupportedEncodingException e) {
+			throw new JedisException(e);
+		}
 	}
 
 	public byte[] serializerField(String key) {
@@ -36,7 +42,11 @@ public class FstSerializer implements ISerializer {
 	}
 
 	public String deSerializerKey(byte[] bytes) {
-		return SafeEncoder.encode(bytes);
+		try {
+			return new String(bytes, Protocol.CHARSET);
+		} catch (UnsupportedEncodingException e) {
+			throw new JedisException(e);
+		}
 	}
 
 	public byte[] serializerValue(Object value) {

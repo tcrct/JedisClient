@@ -2,17 +2,10 @@ package com.duang.jedisclient.serializer;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.support.config.FastJsonConfig;
-import com.alibaba.fastjson.support.spring.GenericFastJsonRedisSerializer;
 import com.duang.jedisclient.common.CacheException;
-import org.nustaq.serialization.FSTObjectInput;
-import org.nustaq.serialization.FSTObjectOutput;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import redis.clients.jedis.util.SafeEncoder;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
+import redis.clients.jedis.Protocol;
+import redis.clients.jedis.exceptions.JedisException;
+import java.io.UnsupportedEncodingException;
 
 /**
  * FastSerializer.
@@ -30,7 +23,11 @@ public class FastJsonSerializer implements ISerializer {
 	}
 
 	public byte[] serializerKey(String key) {
-		return SafeEncoder.encode(key);
+		try {
+			return key.getBytes(Protocol.CHARSET);
+		} catch (UnsupportedEncodingException e) {
+			throw new JedisException(e);
+		}
 	}
 
 	public byte[] serializerField(String key) {
@@ -38,7 +35,11 @@ public class FastJsonSerializer implements ISerializer {
 	}
 
 	public String deSerializerKey(byte[] bytes) {
-		return SafeEncoder.encode(bytes);
+		try {
+			return new String(bytes, Protocol.CHARSET);
+		} catch (UnsupportedEncodingException e) {
+			throw new JedisException(e);
+		}
 	}
 
 	public byte[] serializerValue(Object value) {

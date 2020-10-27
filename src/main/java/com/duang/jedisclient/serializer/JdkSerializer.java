@@ -18,12 +18,10 @@ package com.duang.jedisclient.serializer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import redis.clients.jedis.util.SafeEncoder;
+import redis.clients.jedis.Protocol;
+import redis.clients.jedis.exceptions.JedisException;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.*;
 
 /**
  * JdkSerializer.
@@ -42,15 +40,23 @@ public class JdkSerializer implements ISerializer {
 	}
 
 	public byte[] serializerKey(String key) {
-		return SafeEncoder.encode(key);
+		try {
+			return key.getBytes(Protocol.CHARSET);
+		} catch (UnsupportedEncodingException e) {
+			throw new JedisException(e);
+		}
 	}
 
 	public byte[] serializerField(String key) {
 		return serializerValue(key);
 	}
 
-	public String deSerializerKey(byte[] key) {
-		return SafeEncoder.encode(key);
+	public String deSerializerKey(byte[] bytes) {
+		try {
+			return new String(bytes, Protocol.CHARSET);
+		} catch (UnsupportedEncodingException e) {
+			throw new JedisException(e);
+		}
 	}
 	
 	public byte[] serializerValue(Object value) {
